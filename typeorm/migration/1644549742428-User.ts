@@ -1,4 +1,10 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { type } from 'os';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class User1644549742428 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -49,9 +55,71 @@ export class User1644549742428 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'users',
+        columns: [
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'email',
+            type: 'varchar',
+            length: '250',
+            isNullable: false,
+            isUnique: true,
+          },
+          {
+            name: 'password',
+            type: 'varchar',
+            length: '250',
+            isNullable: false,
+          },
+          {
+            name: 'photo',
+            type: 'varchar',
+            length: '256',
+            isNullable: true,
+          },
+          {
+            name: 'personId',
+            type: 'int',
+            isNullable: false,
+          },
+          {
+            name: 'createdAt',
+            type: 'datetime',
+            default: 'CURRENT_TIMESTAMP',
+          },
+          {
+            name: 'updatedAt',
+            type: 'datetime',
+            default: 'CURRENT_TIMESTAMP',
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'users',
+      new TableForeignKey({
+        columnNames: ['personId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'persons',
+        name: 'FK_users_persons',
+        onDelete: 'CASCADE',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('users', 'FK_users_persons');
+    await queryRunner.dropTable('users');
     await queryRunner.dropTable('persons');
   }
 }
