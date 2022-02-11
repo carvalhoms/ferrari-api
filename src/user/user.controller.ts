@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -8,5 +8,10 @@ export class UserController {
   @Get(':id')
   async show(@Param('id') id) {
     return this.userService.get(id);
+  }
+
+  @Get()
+  async showByEmail(@Query('email') email) {
+    return this.userService.getByEmail(email);
   }
 }

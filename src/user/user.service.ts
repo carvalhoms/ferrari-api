@@ -31,4 +31,25 @@ export class UserService {
 
     return user;
   }
+
+  async getByEmail(email: string) {
+    if (!email) {
+      throw new BadRequestException('Email is required');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        person: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
 }
