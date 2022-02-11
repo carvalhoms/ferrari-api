@@ -84,6 +84,16 @@ export class UserService {
       throw new BadRequestException('Birth date is invalid');
     }
 
+    let user = null;
+
+    try {
+      user = await this.getByEmail(email);
+    } catch (err) {}
+
+    if (user) {
+      throw new BadRequestException('Email already exists');
+    }
+
     return this.prisma.user.create({
       data: {
         person: {
