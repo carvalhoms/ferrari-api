@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -109,7 +110,7 @@ export class UserService {
           },
         },
         email,
-        password,
+        password: bcrypt.hashSync(password, 10),
       },
       include: {
         person: true,
