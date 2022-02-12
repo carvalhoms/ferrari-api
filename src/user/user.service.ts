@@ -29,6 +29,8 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
+    delete user.password;
+
     return user;
   }
 
@@ -49,6 +51,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    delete user.password;
 
     return user;
   }
@@ -94,7 +98,7 @@ export class UserService {
       throw new BadRequestException('Email already exists');
     }
 
-    return this.prisma.user.create({
+    const userCreated = await this.prisma.user.create({
       data: {
         person: {
           create: {
@@ -111,5 +115,9 @@ export class UserService {
         person: true,
       },
     });
+
+    delete userCreated.password;
+
+    return userCreated;
   }
 }
