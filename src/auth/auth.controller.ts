@@ -1,4 +1,11 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Headers,
+} from '@nestjs/common';
 import { parse } from 'date-fns';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
@@ -49,5 +56,17 @@ export class AuthController {
     const token = await this.authService.getToken(user.id);
 
     return { user, token };
+  }
+
+  @Post('login')
+  async login(@Body('email') email, @Body('password') password) {
+    return this.authService.login({ email, password });
+  }
+
+  @Get('me')
+  async me(@Headers('authorization') authorization) {
+    const token = authorization.split(' ')[1];
+
+    return this.authService.decodeToken(token);
   }
 }
