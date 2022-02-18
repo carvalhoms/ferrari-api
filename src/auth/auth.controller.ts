@@ -5,9 +5,13 @@ import {
   Get,
   Post,
   Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { parse } from 'date-fns';
+import { User } from 'src/user/user.decorator';
 import { UserService } from 'src/user/user.service';
+import { Auth } from './auth.decorator';
+import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -63,10 +67,12 @@ export class AuthController {
     return this.authService.login({ email, password });
   }
 
+  @UseGuards(AuthGuard)
   @Get('me')
-  async me(@Headers('authorization') authorization) {
-    const token = authorization.split(' ')[1];
-
-    return this.authService.decodeToken(token);
+  async me(@Auth() auth, @User() user) {
+    return {
+      auth,
+      user,
+    };
   }
 }
