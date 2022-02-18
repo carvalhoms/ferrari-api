@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
-import { id } from 'date-fns/locale';
 import { UserService } from './user.service';
 
 @Controller('users')
