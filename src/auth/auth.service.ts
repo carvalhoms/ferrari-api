@@ -42,7 +42,6 @@ export class AuthService {
 
   async recovery(email: string) {
     const { id } = await this.userService.getByEmail(email);
-
     const token = await this.jwtService.sign({ id }, { expiresIn: 30 * 60 });
 
     await this.prisma.passwordRecovery.create({
