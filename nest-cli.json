@@ -5,6 +5,7 @@
     "assets": {
       "include": "mail/templates/**/*",
       "outDir": "build/src"
-    }
+    },
+    "watchAssets": true
   }
 }
