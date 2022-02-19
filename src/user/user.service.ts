@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 import { MailService } from 'src/mail/mail.service';
 import { join } from 'path';
