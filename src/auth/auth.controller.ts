@@ -6,7 +6,10 @@ import {
   Post,
   UseGuards,
   Put,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { parse } from 'date-fns';
 import { User } from 'src/user/user.decorator';
 import { UserService } from 'src/user/user.service';
@@ -104,5 +107,19 @@ export class AuthController {
   @Post('password-reset')
   async resetPassword(@Body('password') password, @Body('token') token) {
     return this.authService.reset({ password, token });
+  }
+
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      dest: './storage/photos',
+      limits: {
+        fieldSize: 5 * 1024 * 1024, //5mb
+      },
+    }),
+  )
+  @Put('photo')
+  async setPhoto(@User() user, @UploadedFile() file) {
+    return this.userService.setPhoto(user.id, file);
   }
 }
