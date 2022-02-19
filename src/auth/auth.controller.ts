@@ -100,4 +100,9 @@ export class AuthController {
   async forget(@Body('email') email) {
     return this.authService.recovery(email);
   }
+
+  @Post('password-reset')
+  async resetPassword(@Body('password') password, @Body('token') token) {
+    return this.authService.reset({ password, token });
+  }
 }
