@@ -8,6 +8,8 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { parse } from 'date-fns';
@@ -121,5 +123,23 @@ export class AuthController {
   @Put('photo')
   async setPhoto(@User() user, @UploadedFile() file) {
     return this.userService.setPhoto(user.id, file);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('photo')
+  async getPhoto(@User('id') id, @Res({ passthrough: true }) response) {
+    const { file, extension } = await this.userService.getPhoto(id);
+
+    switch (extension) {
+      case 'png':
+        response.set({ 'Content-Type': 'image/png' });
+        break;
+
+      default:
+        response.set({ 'Content-Type': 'image/jpg' });
+        break;
+    }
+
+    return new StreamableFile(file);
   }
 }
